@@ -28,6 +28,10 @@ The folder examples contains example application of the data augmentation algori
 
 Each of the jupyter notebooks run independedntly and only need the data csv file associated with the code which are present in the data file of the corresponding folder.
 
+### Source
+
+The folder augmentdata contains the source code.
+
 
 
 ### Usage

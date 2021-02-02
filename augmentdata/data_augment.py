@@ -1,6 +1,6 @@
 import numpy as np
 import random as rd
-from imblearn.over_sampling import SMOTE 
+# from imblearn.over_sampling import SMOTE 
 
 # following libraries for classification test
 # import test_nn
@@ -349,7 +349,7 @@ def main():
 	print("KNNOR Data:")
 	print(Data_a)
 	print("************************************")
-	try_SMOTE(l,N,k)
+	# try_SMOTE(l,N,k)
 
 
 def try_SMOTE(l,N,k):
