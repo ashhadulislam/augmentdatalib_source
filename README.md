@@ -66,42 +66,89 @@ Example implementation
 from augmentdata import data_augment
 
 l=[
-[1,3,4,1],
-[2,3,4,1],
-[1,2,1,0],
-[3,2,1,0],
-[3,1,1,0],
-[2,1,1,0],
-[3,2,2,1],
-[3,4,2,1],
-[4,3,1,1]
+[1.0,2.0,1.0,0],
+    [1,3,1,0],
+    [2,1,1,0],
+    [3,2,1,0],
+    [3,1,1,0],
+    [1,3,4,1],
+    [1,4,3,1],
+    [1,4,4,1],
+    [2,3,3,1],
+    [2,3,4,1],
+    [2,4,3,1],
+    [2,4,4,1],
+    [3,2,2,1],
+    [3,3,2,1],
+    [3,3,2,1],
+    [3,4,2,1],
+
+    [4,3,1,1]
 ]
 
 l=np.array(l)
+print("Original Data:")
+print(l)
+X=l[:,:-1]
+y=l[:,-1]
 
-k=2
-randmx=1
-daug = data_augment.DataAugment()
-[Data_a,Ext_d,Ext_not]=daug.augment(data=l,k=k,class_ind=0,N=5,randmx=randmx)
 
-print(Data_a)
+
+knnor = data_augment.KNNOR()
+knnor=KNNOR()
+X_new,y_new=knnor.fit_resample(X,y)
+y_new=y_new.reshape(-1,1)
+
+print("KNNOR Data:")
+new_data=np.append(X_new, y_new, axis=1)
+print(new_data)
 ```
 Output
 ```
-array([[1.        , 2.        , 1.        , 0.        ],
-       [3.        , 2.        , 1.        , 0.        ],
-       [3.        , 1.        , 1.        , 0.        ],
-       [2.        , 1.        , 1.        , 0.        ],
-       [1.29027148, 1.98510073, 1.        , 0.        ],
-       [1.65549291, 1.4418645 , 1.        , 0.        ],
-       [2.02559196, 1.01965248, 1.        , 0.        ],
-       [2.79469135, 1.69371064, 1.        , 0.        ],
-       [2.907707  , 1.38716444, 1.        , 0.        ],
-       [1.        , 3.        , 4.        , 1.        ],
-       [2.        , 3.        , 4.        , 1.        ],
-       [3.        , 2.        , 2.        , 1.        ],
-       [3.        , 4.        , 2.        , 1.        ],
-       [4.        , 3.        , 1.        , 1.        ]])
+Original Data:
+[[1. 2. 1. 0.]
+ [1. 3. 1. 0.]
+ [2. 1. 1. 0.]
+ [3. 2. 1. 0.]
+ [3. 1. 1. 0.]
+ [1. 3. 4. 1.]
+ [1. 4. 3. 1.]
+ [1. 4. 4. 1.]
+ [2. 3. 3. 1.]
+ [2. 3. 4. 1.]
+ [2. 4. 3. 1.]
+ [2. 4. 4. 1.]
+ [3. 2. 2. 1.]
+ [3. 3. 2. 1.]
+ [3. 3. 2. 1.]
+ [3. 4. 2. 1.]
+ [4. 3. 1. 1.]]
+
+KNNOR Data:
+[[1.         2.         1.         0.        ]
+ [1.         3.         1.         0.        ]
+ [2.         1.         1.         0.        ]
+ [3.         2.         1.         0.        ]
+ [3.         1.         1.         0.        ]
+ [1.         3.         4.         1.        ]
+ [1.         4.         3.         1.        ]
+ [1.         4.         4.         1.        ]
+ [2.         3.         3.         1.        ]
+ [2.         3.         4.         1.        ]
+ [2.         4.         3.         1.        ]
+ [2.         4.         4.         1.        ]
+ [3.         2.         2.         1.        ]
+ [3.         3.         2.         1.        ]
+ [3.         3.         2.         1.        ]
+ [3.         4.         2.         1.        ]
+ [4.         3.         1.         1.        ]
+ [1.         2.8596414  1.         0.        ]
+ [3.         1.89795961 1.         0.        ]
+ [2.76031358 1.         1.         0.        ]
+ [1.         2.95194388 1.         0.        ]
+ [3.         1.72737314 1.         0.        ]
+ [2.712059   1.         1.         0.        ]
+ [1.         2.94970565 1.         0.        ]]
 ```
 
 ### Read the docs
@@ -112,7 +159,22 @@ https://augmentdatalib-docs.readthedocs.io/en/latest/
 ### Citation
 If you are using this library in your research please cite the project.
 
+Ashhadul Islam, Samir Brahim Belhaouari, Atiq Ur Rahman, Halima Bensmail,
+KNNOR: An oversampling technique for imbalanced datasets,
+Applied Soft Computing,
+2021,
+108288,
+ISSN 1568-4946,
+https://doi.org/10.1016/j.asoc.2021.108288.
+(https://www.sciencedirect.com/science/article/pii/S1568494621010942)
+
+
+Keywords: Data augmentation; Machine learning; Imbalanced data; Nearest neighbor; Support Vector Machines
+
+
 
 ### Authors
-- Dr Samir Brahim Belhaouari: samir.brahim@gmail.com, sbelhaouari@hbku.edu.qa
 - Ashhadul Islam: ashhadulislam@gmail.com, aislam@mail.hbku.edu.qa
+- Dr Samir Brahim Belhaouari: samir.brahim@gmail.com, sbelhaouari@hbku.edu.qa
+- Atiq Ur Rahman: atrehman2@hbku.edu.qa
+- Halima Bensmail: hbensmail@hbku.edu.qa
