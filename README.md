@@ -157,7 +157,7 @@ The documentation of the library is present at
 https://augmentdatalib-docs.readthedocs.io/en/latest/
 
 ### Citation
-If you are using this library in your research please cite the project.
+If you are using this library in your research please cite the following.
 
 Ashhadul Islam, Samir Brahim Belhaouari, Atiq Ur Rahman, Halima Bensmail,
 KNNOR: An oversampling technique for imbalanced datasets,
@@ -166,10 +166,8 @@ Applied Soft Computing,
 108288,
 ISSN 1568-4946,
 https://doi.org/10.1016/j.asoc.2021.108288.
+
 (https://www.sciencedirect.com/science/article/pii/S1568494621010942)
-
-
-Keywords: Data augmentation; Machine learning; Imbalanced data; Nearest neighbor; Support Vector Machines
 
 
 
