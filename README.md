@@ -5,16 +5,16 @@
 [![HitCount](http://hits.dwyl.io/ashhadulislam/sentiment-analyser-lib.svg)](http://hits.dwyl.io/ashhadulislam/sentiment-analyser-lib)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/sentimentanalyser.svg)](https://img.shields.io/pypi/dm/sentimentanalyser.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/ashhadulislam/sentiment-analyser-lib/badge/master)](https://www.codefactor.io/repository/github/ashhadulislam/sentiment-analyser-lib/overview/master) -->
-# Augment data library
+# KNNOR: K-Nearest Neighbor OveRsampling method
 
 ### About
-A generic package to help data scientists balance their dataset by increasing the datapoints for an imbalanced class.
+An oversampling technique for imbalanced datasets.
 
 ### Installation
 
 Use below command to install 
 
-`pip install sentimentanalyser`
+`pip install knnor`
 
 ### Examples
 
@@ -30,7 +30,7 @@ Each of the jupyter notebooks run independedntly and only need the data csv file
 
 ### Source
 
-The folder augmentdata contains the source code.
+The folder knnor contains the source code.
 
 
 
