@@ -140,7 +140,7 @@ class KNNOR:
         X_new_all=np.concatenate((X, X_new_minority), axis=0)
         y_new_all=np.concatenate((y, y_new_minority), axis=0)
         
-        return X_new_all, y_new_all
+        return X_new_all, y_new_all, X_new_minority, y_new_minority
 
 
 
@@ -444,7 +444,7 @@ def main():
 
     
     knnor=KNNOR()
-    X_new,y_new=knnor.fit_resample(X,y)
+    X_new,y_new,_,_=knnor.fit_resample(X,y)
     y_new=y_new.reshape(-1,1)
     print(X_new.shape,y_new.shape)
 
