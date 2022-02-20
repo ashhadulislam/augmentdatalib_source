@@ -192,7 +192,7 @@ class KNNOR:
 
         # then which one is the minority label?
         minority_label=-1
-        minimum_count=999
+        minimum_count=np.inf
         for k,v in dic_nry.items():
             if minimum_count>v:
                 minimum_count=v

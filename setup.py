@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
       name='knnor',
-      version='0.0.3',
+      version='0.0.4',
       description='Generic python library to perform augmentation of data',
       long_description='A generic package to help data scientists balance their dataset by increasing the datapoints for an imbalanced class.'
                   ,
