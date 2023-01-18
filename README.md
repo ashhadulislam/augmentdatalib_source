@@ -64,44 +64,53 @@ The outputs are:
 Example implementation
 ```
 from augmentdata import data_augment
-
-l=[
-[1.0,2.0,1.0,0],
+ '''
+    x^2 + y^2 + z^2 < 15 => 0
+    x^2 + y^2 + z^2 >= 15 => 1
+    '''
+    l=[
+    
+    [1.0,2.0,1.0,0],
     [1,3,1,0],
     [2,1,1,0],
     [3,2,1,0],
     [3,1,1,0],
+
     [1,3,4,1],
     [1,4,3,1],
     [1,4,4,1],
+
     [2,3,3,1],
     [2,3,4,1],
     [2,4,3,1],
     [2,4,4,1],
+
     [3,2,2,1],
     [3,3,2,1],
     [3,3,2,1],
     [3,4,2,1],
 
     [4,3,1,1]
-]
+    ]
 
-l=np.array(l)
-print("Original Data:")
-print(l)
-X=l[:,:-1]
-y=l[:,-1]
+    l=np.array(l)
+    X=l[:,:-1]
+    y=l[:,-1]
+    print("X=",X.shape,"y=",y.shape)
+    print("Original Data:")
+    print(l)
+    print("************************************")
 
+    
+    knnor=KNNOR()
+    X_new,y_new,_,_=knnor.fit_resample(X,y)
+    y_new=y_new.reshape(-1,1)
+    print(X_new.shape,y_new.shape)
 
-
-knnor = data_augment.KNNOR()
-knnor=KNNOR()
-X_new,y_new=knnor.fit_resample(X,y)
-y_new=y_new.reshape(-1,1)
-
-print("KNNOR Data:")
-new_data=np.append(X_new, y_new, axis=1)
-print(new_data)
+    print("KNNOR Data:")
+    new_data=np.append(X_new, y_new, axis=1)
+    print(new_data)
+    print("************************************")
 ```
 Output
 ```
