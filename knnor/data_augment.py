@@ -147,13 +147,13 @@ class KNNOR:
     def fit_resample(self,X,y,num_nbrs=3, prop_minority=0.5, max_dist=0.5, proportion=1):
         
         
-        print("SHape of y",y.shape)
-        print("Count",Counter(y))
+#         print("SHape of y",y.shape)
+#         print("Count",Counter(y))
 
 
         # get the minority count
         max_count=max(list(Counter(y).values()))
-        print("max is ",max_count)
+#         print("max is ",max_count)
 
         minority_labels=[]
         majority_label=-1
@@ -186,7 +186,7 @@ class KNNOR:
             print(X_maj.shape,X_min.shape,X.shape)
             # count to add
             N=self.count_to_add(X_min,max_count,proportion)
-            print("Count to add ",N)
+#             print("Count to add ",N)
 
 
             internal_distance = np.linalg.norm(X_min - X_min[:,None], axis = -1)
@@ -196,7 +196,7 @@ class KNNOR:
             knd_sorted = np.sort(knd)        
             threshold_dist = knd_sorted[math.floor(prop_minority*len(knd_sorted))]
 
-            print("Threshold distance is ",threshold_dist)    
+#             print("Threshold distance is ",threshold_dist)    
 
 
 
@@ -226,13 +226,13 @@ class KNNOR:
                     alphak = random.uniform(0,max_dist)      
 
                     m0 = v
-                    print("Origin point",m0)
+#                     print("Origin point",m0)
                     # iterate for n_nbrs
                     for j in range(num_nbrs):
-                        print("Nbr",kv[j,:])
+#                         print("Nbr",kv[j,:])
                         m1 = m0 + alphak * (kv[j,:] - m0)
                         m0 = m1
-                        print("New point",m0)
+#                         print("New point",m0)
 
         #             can_use=True
                     # blind usage
