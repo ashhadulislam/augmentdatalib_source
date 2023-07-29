@@ -1,7 +1,7 @@
 import numpy as np
 import random
 # from imblearn.over_sampling import SMOTE 
-
+from collections import Counter
 # following libraries for classification test
 # import test_nn
 
@@ -11,138 +11,253 @@ import math
 class KNNOR:
 
 
-    # def knnor_over_sample(X,y,n_to_sample,num_neighbors,proportion,max_dist_point,intra=True):
-    def fit_resample(self,X,y,**params):
-        threshold_cannot_use=10
 
-        # check for number of neighbors
-        if 'num_neighbors' in params.keys():
-            num_neighbors=params['num_neighbors']
-        else:
-            good_neighbor_count=self.good_count_neighbors(X,y)
-            if good_neighbor_count<=1:
-                print("Too few neighbors")
-                return X,y
-            num_neighbors=random.randrange(1,good_neighbor_count)
+#     def fit_resample(self,X,y,**params):
+#         threshold_cannot_use=10
 
-
-        if 'max_dist_point' in params.keys():
-            max_dist_point=params['max_dist_point']
-        else:
-            max_dist_point=self.max_threshold_dist(X,y,num_neighbors)
-
-        if 'proportion_minority' in params.keys():
-            '''
-            proportion of minority population to use
-            '''
-            proportion_minority=params['proportion_minority']
-            inter=False
-        else:
-            proportion_intra=self.calculate_distance_threshold(X,y,num_neighbors,intra=False)
-            proportion_minority=proportion_intra
-            inter=True
+#         # check for number of neighbors
+#         if 'num_neighbors' in params.keys():
+#             num_neighbors=params['num_neighbors']
+#         else:
+#             good_neighbor_count=self.good_count_neighbors(X,y)
+#             if good_neighbor_count<=1:
+#                 print("Too few neighbors")
+#                 return X,y
+#             num_neighbors=random.randrange(1,good_neighbor_count)
 
 
+#         if 'max_dist_point' in params.keys():
+#             max_dist_point=params['max_dist_point']
+#         else:
+#             max_dist_point=self.max_threshold_dist(X,y,num_neighbors)
 
-        if not self.check_enough_minorities(X,y,num_neighbors):
-            print("Too few minorities")
-            return X,y
+#         if 'proportion_minority' in params.keys():
+#             '''
+#             proportion of minority population to use
+#             '''
+#             proportion_minority=params['proportion_minority']
+#             inter=False
+#         else:
+#             proportion_intra=self.calculate_distance_threshold(X,y,num_neighbors,intra=False)
+#             proportion_minority=proportion_intra
+#             inter=True
 
-        if 'final_proportion' in params.keys():
-            '''
-            final minority pop = what percentage of majority pop
-            '''
-            final_proportion=params['final_proportion']
+
+
+#         if not self.check_enough_minorities(X,y,num_neighbors):
+#             print("Too few minorities")
+#             return X,y
+
+#         if 'final_proportion' in params.keys():
+#             '''
+#             final minority pop = what percentage of majority pop
+#             '''
+#             final_proportion=params['final_proportion']
             
-        else:
-            final_proportion=1
+#         else:
+#             final_proportion=1
 
 
-        n_to_sample=self.calculate_count_to_add(X,y,final_proportion)
+#         n_to_sample=self.calculate_count_to_add(X,y,final_proportion)
 
-        original_n_neighbors=num_neighbors
-        original_max_dist_point=max_dist_point    
-        original_proportion=proportion_minority
+#         original_n_neighbors=num_neighbors
+#         original_max_dist_point=max_dist_point    
+#         original_proportion=proportion_minority
         
-        minority_label,minority_indices=self.get_minority_label_index(X,y)
-        X_minority=X[minority_indices]
-        y_minority=y[minority_indices]
-        majority_indices=[]
-        for i in range(0,y.shape[0]):
-            if i not in minority_indices:
-                majority_indices.append(i)
-        print(len(majority_indices),len(minority_indices),y.shape)
-        X_majority=X[majority_indices]
-        y_majority=y[majority_indices]
+#         minority_label,minority_indices=self.get_minority_label_index(X,y)
+#         X_minority=X[minority_indices]
+#         y_minority=y[minority_indices]
+#         majority_indices=[]
+#         for i in range(0,y.shape[0]):
+#             if i not in minority_indices:
+#                 majority_indices.append(i)
+#         print(len(majority_indices),len(minority_indices),y.shape)
+#         X_majority=X[majority_indices]
+#         y_majority=y[majority_indices]
         
-        if not inter:
-            internal_distance = np.linalg.norm(X_minority - X_minority[:,None], axis = -1)
-            internal_distance = np.sort(internal_distance)
-            knd=internal_distance[:,num_neighbors]        
+#         if not inter:
+#             internal_distance = np.linalg.norm(X_minority - X_minority[:,None], axis = -1)
+#             internal_distance = np.sort(internal_distance)
+#             knd=internal_distance[:,num_neighbors]        
+#             knd_sorted = np.sort(knd)        
+#         else:
+#             external_distance=np.linalg.norm(X_majority - X_minority[:,None], axis = -1)
+#             external_distance = np.sort(external_distance)
+#             knd=external_distance[:,num_neighbors]   
+#             knd_sorted=-np.sort(-knd)
+            
+#         threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]
+            
+#         X_new_minority=[]
+#         N = n_to_sample
+#         consecutive_cannot_use=0
+#         while N>0:
+#             for i in range(X_minority.shape[0]):
+#                 if inter:
+#                     if knd[i]>threshold_dist:
+#                         continue
+#                 else:
+#                     if knd[i]<threshold_dist:
+#                         continue
+#                 if N==0:
+#                     break
+#                 v = X_minority[i,:]
+#                 val=np.sort( abs((X_minority-v)*(X_minority-v)).sum(axis=1) )
+#                 # sort neighbors by distance
+#                 # obviously will have to ignore the 
+#                 # first term as its a distance to iteself
+#                 # which wil be 0
+#                 posit=np.argsort(abs((X_minority-v)*(X_minority-v)).sum(axis=1))
+#                 kv = X_minority[posit[1:num_neighbors+1],:]
+#                 alphak = random.uniform(0,max_dist_point)
+#                 m0 = v
+#                 for j in range(num_neighbors):
+#                     m1 = m0 + alphak * (kv[j,:] - m0)
+#                     m0 = m1
+#                 num_neighbors_to_test=math.floor(math.sqrt(num_neighbors))
+#                 can_use=self.predict_classification(X,y,m0, num_neighbors_to_test,minority_label)
+#                 can_use=can_use and not(self.check_duplicates(m0,X_minority))
+#                 can_use=can_use and not(self.check_duplicates(m0,X_new_minority))                            
+#                 if can_use:
+#                     consecutive_cannot_use=0
+#                     num_neighbors=min(num_neighbors+1,original_n_neighbors)
+#                     max_dist_point=min(max_dist_point+0.01,original_max_dist_point)
+#                     proportion_minority=max(proportion_minority-0.01,original_proportion)
+#                     threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]                
+#                     X_new_minority.append(m0)
+#                     N-=1
+#                 else:
+#                     consecutive_cannot_use+=1
+#                     if consecutive_cannot_use>=threshold_cannot_use:
+#                         num_neighbors=max(num_neighbors-1,2)
+#                         max_dist_point=max(max_dist_point-0.01,0.01)
+#                         proportion_minority=min(proportion_minority+0.01,0.9)
+#                         threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]
+#                         consecutive_cannot_use=0
+
+#         y_new_minority=[minority_label for i in range(len(X_new_minority))]        
+#         X_new_minority=np.array(X_new_minority)
+#         X_new_all=np.concatenate((X, X_new_minority), axis=0)
+#         y_new_all=np.concatenate((y, y_new_minority), axis=0)
+        
+#         return X_new_all, y_new_all, X_new_minority, y_new_minority
+
+
+
+    def fit_resample(self,X,y,num_nbrs=3, prop_minority=0.5, max_dist=0.5, proportion=1):
+        
+        
+        print("SHape of y",y.shape)
+        print("Count",Counter(y))
+
+
+        # get the minority count
+        max_count=max(list(Counter(y).values()))
+        print("max is ",max_count)
+
+        minority_labels=[]
+        majority_label=-1
+        for k,val in Counter(y).items():
+            if val !=max_count:
+                minority_labels.append(k)
+            else:
+                majority_label=k
+        all_labels=list(Counter(y).keys())
+        print(minority_labels,majority_label,all_labels)       
+
+
+
+
+        X_all_new_minorities=[]
+        y_all_new_minorities=[]
+        for minority_label in minority_labels:
+
+            print("Minority label",minority_label)
+
+            other_labels=list(set(all_labels)-set([minority_label]))
+            print(minority_label,other_labels)
+            X_maj=[]
+            for i in range(X.shape[0]):
+                if y[i] in other_labels:
+                    X_maj.append(X[i])
+
+            X_maj=np.array(X_maj)
+            X_min=X[y==minority_label]
+            print(X_maj.shape,X_min.shape,X.shape)
+            # count to add
+            N=self.count_to_add(X_min,max_count,proportion)
+            print("Count to add ",N)
+
+
+            internal_distance = np.linalg.norm(X_min - X_min[:,None], axis = -1)
+            internal_distance = np.sort(internal_distance)    
+
+            knd=internal_distance[:,num_nbrs] 
             knd_sorted = np.sort(knd)        
-        else:
-            external_distance=np.linalg.norm(X_majority - X_minority[:,None], axis = -1)
-            external_distance = np.sort(external_distance)
-            knd=external_distance[:,num_neighbors]   
-            knd_sorted=-np.sort(-knd)
-            
-        threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]
-            
-        X_new_minority=[]
-        N = n_to_sample
-        consecutive_cannot_use=0
-        while N>0:
-            for i in range(X_minority.shape[0]):
-                if inter:
+            threshold_dist = knd_sorted[math.floor(prop_minority*len(knd_sorted))]
+
+            print("Threshold distance is ",threshold_dist)    
+
+
+
+
+
+
+            threshold_cannot_use=10
+            original_n_neighbors=num_nbrs
+            original_max_dist_point=max_dist
+            original_proportion=prop_minority    
+
+            consecutive_cannot_use=0
+            X_new_minority=[]
+            while N>0:
+                for i in range(X_min.shape[0]):
                     if knd[i]>threshold_dist:
-                        continue
-                else:
-                    if knd[i]<threshold_dist:
-                        continue
-                if N==0:
-                    break
-                v = X_minority[i,:]
-                val=np.sort( abs((X_minority-v)*(X_minority-v)).sum(axis=1) )
-                # sort neighbors by distance
-                # obviously will have to ignore the 
-                # first term as its a distance to iteself
-                # which wil be 0
-                posit=np.argsort(abs((X_minority-v)*(X_minority-v)).sum(axis=1))
-                kv = X_minority[posit[1:num_neighbors+1],:]
-                alphak = random.uniform(0,max_dist_point)
-                m0 = v
-                for j in range(num_neighbors):
-                    m1 = m0 + alphak * (kv[j,:] - m0)
-                    m0 = m1
-                num_neighbors_to_test=math.floor(math.sqrt(num_neighbors))
-                can_use=self.predict_classification(X,y,m0, num_neighbors_to_test,minority_label)
-                can_use=can_use and not(self.check_duplicates(m0,X_minority))
-                can_use=can_use and not(self.check_duplicates(m0,X_new_minority))                            
-                if can_use:
-                    consecutive_cannot_use=0
-                    num_neighbors=min(num_neighbors+1,original_n_neighbors)
-                    max_dist_point=min(max_dist_point+0.01,original_max_dist_point)
-                    proportion_minority=max(proportion_minority-0.01,original_proportion)
-                    threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]                
+                        continue        
+                    if N==0:
+                        break
+
+                    # get the start point
+                    v = X_min[i,:]
+                    # distance to all points of minority class
+        #             val=np.sort( abs((X_min-v)*(X_min-v)).sum(axis=1) )            
+                    posit=np.argsort(abs((X_min-v)*(X_min-v)).sum(axis=1))
+                    kv = X_min[posit[1:num_nbrs+1],:]
+                    alphak = random.uniform(0,max_dist)      
+
+                    m0 = v
+                    print("Origin point",m0)
+                    # iterate for n_nbrs
+                    for j in range(num_nbrs):
+                        print("Nbr",kv[j,:])
+                        m1 = m0 + alphak * (kv[j,:] - m0)
+                        m0 = m1
+                        print("New point",m0)
+
+        #             can_use=True
+                    # blind usage
                     X_new_minority.append(m0)
                     N-=1
-                else:
-                    consecutive_cannot_use+=1
-                    if consecutive_cannot_use>=threshold_cannot_use:
-                        num_neighbors=max(num_neighbors-1,2)
-                        max_dist_point=max(max_dist_point-0.01,0.01)
-                        proportion_minority=min(proportion_minority+0.01,0.9)
-                        threshold_dist = knd_sorted[math.floor(proportion_minority*len(knd_sorted))]
-                        consecutive_cannot_use=0
-
-        y_new_minority=[minority_label for i in range(len(X_new_minority))]        
-        X_new_minority=np.array(X_new_minority)
-        X_new_all=np.concatenate((X, X_new_minority), axis=0)
-        y_new_all=np.concatenate((y, y_new_minority), axis=0)
-        
-        return X_new_all, y_new_all, X_new_minority, y_new_minority
+                    if N==0:
+                        break
 
 
+            X_new_minority=np.array(X_new_minority)
+    #         print(X_new_minority.shape,"created")
+    #         print("*"*10)
+            y_new_minority=[minority_label for i in range(X_new_minority.shape[0])]    
+            X_all_new_minorities.append(X_new_minority)
+            y_all_new_minorities.append(y_new_minority)
+
+        X_all_new_minorities=np.concatenate(X_all_new_minorities)
+        y_all_new_minorities=np.concatenate(y_all_new_minorities)
+
+    #     print(X_all_new_minorities.shape,y_all_new_minorities.shape)
+        print(X.shape,X_all_new_minorities.shape)
+
+        X_resampled=np.concatenate([X,X_all_new_minorities])
+        y_resampled=np.concatenate([y,y_all_new_minorities])
+        return X_resampled,y_resampled,X_all_new_minorities,y_all_new_minorities
 
 
 
@@ -240,8 +355,8 @@ class KNNOR:
         from math import factorial
         
         try:
-            window_size = np.abs(np.int(window_size))
-            order = np.abs(np.int(order))
+            window_size = np.abs(int(window_size))
+            order = np.abs(int(order))
         except ValueError:
             raise ValueError("window_size and order have to be of type int")
         if window_size % 2 != 1 or window_size < 1:
@@ -377,23 +492,29 @@ class KNNOR:
             return False
         return True
 
+    def count_to_add(self,X_min,max_count,proportion):
+        N1=max_count
+        N2=X_min.shape[0]
+    #     print("maj count",N1,"min count",N2)
+        count_to_add = int(N1*proportion)-N2
+        return count_to_add
 
-    def calculate_count_to_add(self,X,y,final_proportion):
-        '''
-        Calculate the number of artificial points to be generated so that
-        (count_minority_existing+count_artificial_minority)/count_majority_existing=final_proportion
-        '''
-        minority_label,minority_indices=self.get_minority_label_index(X,y)
-        majority_indices=[]
-        for i in range(0,y.shape[0]):
-            if i not in minority_indices:
-                majority_indices.append(i)
-        count_minority=len(minority_indices)
-        count_majority=len(majority_indices)
-        new_minority=int((final_proportion*count_majority)-count_minority)
-        if new_minority<1:
-            return -1
-        return new_minority
+#     def calculate_count_to_add(self,X,y,final_proportion):
+#         '''
+#         Calculate the number of artificial points to be generated so that
+#         (count_minority_existing+count_artificial_minority)/count_majority_existing=final_proportion
+#         '''
+#         minority_label,minority_indices=self.get_minority_label_index(X,y)
+#         majority_indices=[]
+#         for i in range(0,y.shape[0]):
+#             if i not in minority_indices:
+#                 majority_indices.append(i)
+#         count_minority=len(minority_indices)
+#         count_majority=len(majority_indices)
+#         new_minority=int((final_proportion*count_majority)-count_minority)
+#         if new_minority<1:
+#             return -1
+#         return new_minority
 
 
 
@@ -410,10 +531,10 @@ def main():
     x^2 + y^2 + z^2 >= 15 => 1
     '''
     l=[
-    
+
     [1.0,2.0,1.0,0],
     [1,3,1,0],
-    [2,1,1,0],
+    [2,1,2,0],
     [3,2,1,0],
     [3,1,1,0],
 
@@ -442,7 +563,7 @@ def main():
     print(l)
     print("************************************")
 
-    
+
     knnor=KNNOR()
     X_new,y_new,_,_=knnor.fit_resample(X,y)
     y_new=y_new.reshape(-1,1)
@@ -453,10 +574,7 @@ def main():
     print(new_data)
     print("************************************")
 
-    
-
-
-
 
 if __name__=="__main__":
     main()
+
